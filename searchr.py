@@ -1,21 +1,49 @@
 import scraper
+import os
+from dotenv import load_dotenv
 from flask import Flask
+from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource, Api, reqparse
+
+load_dotenv()
 
 app = Flask(__name__)
 api = Api(app)
+auth = HTTPBasicAuth()
 
 parser = reqparse.RequestParser()
 parser.add_argument('search_term')
 
+# auth stuff
+users = {
+    "bot": os.getenv("BOT_PASSWORD")
+}
+
+@auth.verify_password
+def verify_password(username, password):
+    if username in users:
+        if password == users[username]:
+            return True
+    return False
+
+# posts request with search term, receives results as json
 class SearchResults(Resource):
-    def get(self):
+    @auth.login_required
+    def post(self):
         args = parser.parse_args()
         search_term = args['search_term']
         results = scraper.search_matey(search_term)
-        return results
+        return results, 201
 
-api.add_resource(SearchResults, '/')
+# placeholder in order to return something at / for Zappa that has no params
+class Dummy(Resource):
+    def get(self):
+        return {'tk':'pk'}
+
+
+api.add_resource(Dummy, '/')
+api.add_resource(SearchResults, '/search')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
