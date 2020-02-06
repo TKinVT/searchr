@@ -17,15 +17,19 @@ def clean_search_term(search_term):
     new_term = cleaner.replace(' ', '%20')
     return new_term
 
-def search_matey(search_term, num_results=5, search_type=None):
+def search_matey(search_term, search_type, num_results=5):
 
-    if search_type == "movie" or search_type == "tv":
-        search_type = "200"
-    elif search_type == "audio":
-        search_type = "100"
-    else:
-        search_type = "0"
+    # adapted switch statement solution from stackoverflow suggestions
+    # https://stackoverflow.com/questions/60208/replacements-for-switch-statement-in-python
+    search_types = {
+        'movie': '200',
+        'tv': '200',
+        'audio': '100',
+        'audiobook': '600',
+        None: '0'
+    }
 
+    search_type = search_types[search_type]
     search_term = clean_search_term(search_term)
     url = BASE_URL + "/search/{}/0/99/".format(search_term) + search_type
     doc = requests.get(url).text

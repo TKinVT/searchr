@@ -12,7 +12,8 @@ api = Api(app)
 auth = HTTPBasicAuth()
 
 parser = reqparse.RequestParser()
-parser.add_argument('search_term')
+parser.add_argument('search_term', required=True)
+parser.add_argument('search_type')
 
 # auth stuff
 users = {
@@ -32,13 +33,14 @@ class SearchResults(Resource):
     def post(self):
         args = parser.parse_args()
         search_term = args['search_term']
-        results = scraper.search_matey(search_term)
+        search_type = args['search_type']
+        results = scraper.search_matey(search_term, search_type)
         return results, 201
 
 # placeholder in order to return something at / for Zappa that has no params
 class Dummy(Resource):
     def get(self):
-        return {'tk':'pk'}
+        return {'tk':'loves pk'}
 
 
 api.add_resource(Dummy, '/')
