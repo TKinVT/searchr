@@ -26,6 +26,7 @@ def search_matey(search_term, search_type, num_results=5):
         'tv': '200',
         'audio': '100',
         'audiobook': '600',
+        'other': '0',
         None: '0'
     }
 
