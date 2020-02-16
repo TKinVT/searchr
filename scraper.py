@@ -30,6 +30,16 @@ def search_matey(search_term, search_type, num_results=5):
         None: '0'
     }
 
+    result_types = {
+        'Movies': 'movie',
+        'HD - Movies': 'movie',
+        'Music videos': 'musicvideo',
+        'TV Shows': 'tv',
+        'Music': 'audio',
+        'FLAC': 'audio',
+        'Audio books': 'audiobook'
+    }
+
     search_type = search_types[search_type]
     search_term = clean_search_term(search_term)
     url = BASE_URL + "/search/{}/0/99/".format(search_term) + search_type
@@ -44,7 +54,9 @@ def search_matey(search_term, search_type, num_results=5):
     results = []
     for row in rows[:num_results]:
         row_cells = row.find_all('td')
-        row_type = row_cells[0].a.text
+        row_type = row_cells[0].find_all('a')[1].text
+        if row_type in result_types:
+            row_type = result_types[row_type]
         row_name = row_cells[1].a.text
         row_magnet_link = row_cells[1].find_all('a')[1]['href']
         row_seeders = row_cells[2].text
@@ -58,7 +70,7 @@ def search_matey(search_term, search_type, num_results=5):
 if __name__ == '__main__':
     import sys
     search = sys.argv[1]
-    s = search_matey(search)
+    s = search_matey(search, None)
     print(s)
     # print("SE\t|LE\t|Name")
     # print("--\t --\t --")
