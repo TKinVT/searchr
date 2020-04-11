@@ -3,9 +3,16 @@ import string
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-load_dotenv()
+from jsonbox import JsonBox
 
-BASE_URL = os.getenv("TORRENT_SITE_URL")
+
+load_dotenv()
+JSONBOX_ID = os.getenv("JSONBOX_ID")
+API_KEY = os.getenv("API_KEY")
+jb = JsonBox()
+
+# BASE_URL = os.getenv("TORRENT_SITE_URL")
+BASE_URL = 'https://' + jb.read(JSONBOX_ID, sort_by='avg')[0]['url']
 
 
 def clean_search_term(search_term):
