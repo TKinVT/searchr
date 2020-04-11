@@ -1,23 +1,13 @@
-import time
 import requests
 import os
 from dotenv import load_dotenv
 from jsonbox import JsonBox
-
+from timer import timer
 
 load_dotenv()
 JSONBOX_ID = os.getenv("JSONBOX_ID")
 API_KEY = os.getenv("API_KEY")
 jb = JsonBox()
-
-
-def timer(func):
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        f = func(*args, **kwargs)
-        elapsed = time.time() - start
-        return [f, elapsed]
-    return wrapper
 
 
 @timer
@@ -44,3 +34,4 @@ def update_urls():
 
 if __name__ == '__main__':
     update_urls()
+    print(jb.read(JSONBOX_ID, sort_by='avg'))
