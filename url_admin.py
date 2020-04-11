@@ -44,6 +44,3 @@ def update_urls():
 
 if __name__ == '__main__':
     update_urls()
-    urls = jb.read(JSONBOX_ID, sort_by='avg')
-    for url in urls:
-        print(f"{url['url']}|{url['avg']} seconds")
